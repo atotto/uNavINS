@@ -182,7 +182,7 @@ azb = Filter.getAccelBiasZ_mss();
 ## <a name="axis-system"></a>Axis System
 This library expects IMU data to be input in a defined axis system, which is shown below. It is a right handed coordinate system with x-axis pointed forward, the y-axis to the right, and the z-axis positive down, common in aircraft dynamics. Pitch is defined as a rotation angle around the y-axis with level as zero and roll is defined as a rotation angle around the x-axis with level as zero. Yaw is defined as a rotation angle around the z-axis with zero defined as the starting orientation. Heading is defined as a rotation angle around the z-axis with zero defined as magnetic north.
 
-<img src="https://github.com/bolderflight/MPU9250/blob/master/docs/MPU-9250-AXIS.png" alt="Common Axis System" width="250">
+<img src="https://github.com/bolderflight/MPU9250/blob/master/extras/MPU-9250-AXIS.png" alt="Common Axis System" width="250">
 
 ## Example List
 * **uNavINS-with-MPU9250**: demonstrates using this filter with an MPU-9250 IMU. *CalibrateMPU9250.ino* is used to calibrate the MPU-9250 IMU and store the calibration coefficients in EEPROM. *uNavINS_MPU9250.ino* uses the MPU-9250 IMU and uBlox GPS as measurement inputs to the uNav INS filter, which is run at a rate of 100 Hz. 
