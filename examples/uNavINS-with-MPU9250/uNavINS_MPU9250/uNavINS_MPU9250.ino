@@ -32,10 +32,9 @@ int status;
 volatile int newData;
 // a uNavINS object
 uNavINS Filter;
-UBLOX gps(4);
+UBLOX gps(Serial1, 115200);
 bool newGpsData;
 unsigned long prevTOW;
-gpsData uBloxData;
 // timers to measure performance
 unsigned long tstart, tstop;
 
@@ -44,7 +43,7 @@ void setup() {
   Serial.begin(115200);
   while(!Serial) {}
 
-  gps.begin(115200);
+  gps.begin();
 
   // start communication with IMU 
   status = Imu.begin();
@@ -66,15 +65,19 @@ void setup() {
 }
 
 void loop() {
-  gps.read(&uBloxData);
-  if (uBloxData.numSV > 5) {
+  gps.readSensor();
+  if (gps.getNumSatellites() > 5) {
     if (newData == 1) {
       newData = 0;
       tstart = micros();
       // read the sensor
       Imu.readSensor();
       // update the filter
-      Filter.update(uBloxData.iTOW,uBloxData.velN,uBloxData.velE,uBloxData.velD,uBloxData.lat*PI/180.0f,uBloxData.lon*PI/180.0f,uBloxData.hMSL,Imu.getGyroY_rads(),-1*Imu.getGyroX_rads(),Imu.getGyroZ_rads(),Imu.getAccelY_mss(),-1*Imu.getAccelX_mss(),Imu.getAccelZ_mss(),Imu.getMagX_uT(),Imu.getMagY_uT(),Imu.getMagZ_uT());
+      Filter.update(gps.getTow_ms(), gps.getNorthVelocity_ms(), gps.getEastVelocity_ms(), gps.getDownVelocity_ms(),
+                    gps.getLatitude_deg()*PI/180.0f, gps.getLongitude_deg()*PI/180.0f, gps.getMSLHeight_m(),
+                    Imu.getGyroY_rads(), -1*Imu.getGyroX_rads(), Imu.getGyroZ_rads(),
+                    Imu.getAccelY_mss(), -1*Imu.getAccelX_mss(), Imu.getAccelZ_mss(),
+                    Imu.getMagX_uT(), Imu.getMagY_uT(), Imu.getMagZ_uT());
       Serial.print(Filter.getPitch_rad()*180.0f/PI);
       Serial.print("\t");
       Serial.print(Filter.getRoll_rad()*180.0f/PI);
